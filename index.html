@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>六經山林</title>
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --card: #ffffff;
+      --ink: #2c2c2c;
+      --ink-light: #6b6b6b;
+      --line: #e5e0d8;
+      --accent: #5b7c5a;
+      --accent-soft: #e8f0e7;
+      --warm: #c4a77d;
+      --correct: #4a7c59;
+      --wrong: #b85c38;
+      --radius: 22px;
+      --radius-sm: 16px;
+      --shadow: 0 4px 24px rgba(44, 44, 44, 0.07);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Hiragino Sans", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    #app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .page {
+      display: none;
+      min-height: 100vh;
+      padding: 24px 20px 40px;
+      animation: fadeIn 0.35s ease;
+    }
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 首頁 */
+    #page-home {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    #page-home.active { display: flex; }
+
+    .logo {
+      font-size: 2.3rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      margin-bottom: 16px;
+    }
+    .desc {
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      margin-bottom: 48px;
+      line-height: 1.7;
+    }
+    .home-footer {
+      position: absolute;
+      bottom: 32px;
+      font-size: 0.75rem;
+      color: #b0a99f;
+    }
+
+    .btn-main {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 15px 48px;
+      border-radius: 50px;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 14px rgba(91, 124, 90, 0.25);
+    }
+    .btn-main:hover {
+      background: #4a6b49;
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--ink-light);
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    /* 選擇關卡 */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .page-header h2 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+    }
+
+    .module-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .module-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px 16px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: all 0.25s;
+      border: 1.5px solid transparent;
+      text-align: center;
+    }
+    .module-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(91, 124, 90, 0.13);
+    }
+
+    /* 臨床總覽佔滿整行 */
+    .module-card.wide {
+      grid-column: 1 / -1;
+      padding: 26px 20px;
+    }
+    .module-card.wide .module-emoji {
+      font-size: 2.2rem;
+    }
+    .module-card.wide .module-name {
+      font-size: 1.25rem;
+    }
+
+    .module-emoji { font-size: 1.8rem; margin-bottom: 8px; }
+    .module-num { font-size: 0.72rem; color: var(--warm); letter-spacing: 0.1em; margin-bottom: 4px; }
+    .module-name { font-size: 1.05rem; font-weight: 500; margin-bottom: 4px; }
+    .module-desc { font-size: 0.8rem; color: var(--ink-light); }
+
+    /* 答題頁 */
+    .quiz-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .quiz-progress-info { font-size: 0.9rem; color: var(--ink-light); }
+    .quiz-score { font-size: 0.95rem; font-weight: 500; color: var(--accent); }
+
+    .progress-track {
+      height: 6px;
+      background: var(--line);
+      border-radius: 10px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      border-radius: 10px;
+      transition: width 0.4s ease;
+    }
+
+    .quiz-body {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+
+    .diff-tag {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .diff-tag.中等 { background: #f5efe6; color: #a67c52; }
+    .diff-tag.困難 { background: #f8e9e6; color: var(--wrong); }
+
+    .question {
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 12px; }
+
+    .option {
+      background: #fafaf7;
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 15px 18px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .option:hover:not(.disabled) {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .option.correct {
+      border-color: var(--correct);
+      background: #eaf3ec;
+      color: var(--correct);
+    }
+    .option.wrong {
+      border-color: var(--wrong);
+      background: #fdf0eb;
+      color: var(--wrong);
+    }
+    .option.disabled { pointer-events: none; }
+
+    .feedback-panel {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.3s ease;
+    }
+    .feedback-panel.hidden { display: none; }
+
+    .feedback-title {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+    .feedback-title.ok { color: var(--correct); }
+    .feedback-title.ng { color: var(--wrong); }
+
+    .feedback-explain {
+      background: #f7f4ef;
+      padding: 14px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+
+    /* 結算 */
+    #page-result {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    #page-result.active { display: flex; }
+
+    .result-emoji { font-size: 3rem; margin-bottom: 12px; }
+    .result-label {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      letter-spacing: 0.15em;
+      margin-bottom: 12px;
+    }
+    .result-score {
+      font-size: 3.4rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 32px;
+    }
+    .result-detail {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      margin-bottom: 36px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .detail-item span { font-size: 0.8rem; color: var(--ink-light); }
+    .detail-item strong { font-size: 1.3rem; font-weight: 500; }
+  </style>
+</head>
+<body>
+  <div id="app">
+
+    <!-- 首頁 -->
+    <section id="page-home" class="page active">
+      <div class="home-content">
+        <div class="logo">🌿 六經山林</div>
+        <p class="desc">入此林者，當以經典為舟<br>以臨床為岸，溫故而知新</p>
+        <button class="btn-main" id="btn-start">踏入山林</button>
+      </div>
+      <div class="home-footer">杏林一脈 · 六經為綱</div>
+    </section>
+
+    <!-- 選擇關卡 -->
+    <section id="page-modules" class="page">
+      <div class="page-header">
+        <button class="btn-back" data-back="home">←</button>
+        <h2>選擇修行關卡</h2>
+      </div>
+      <div class="module-grid">
+        <!-- 臨床總覽：佔滿整行 -->
+        <div class="module-card wide" data-module="all">
+          <div class="module-emoji">📚</div>
+          <div class="module-num">總錄</div>
+          <div class="module-name">臨床總覽</div>
+          <div class="module-desc">融會貫通 · 綜合印證</div>
+        </div>
+
+        <div class="module-card" data-module="M1">
+          <div class="module-emoji">☯️</div>
+          <div class="module-num">第一關</div>
+          <div class="module-name">六經辨證</div>
+          <div class="module-desc">核心心法</div>
+        </div>
+        <div class="module-card" data-module="M2">
+          <div class="module-emoji">🍵</div>
+          <div class="module-num">第二關</div>
+          <div class="module-name">經典方劑</div>
+          <div class="module-desc">方證對應</div>
+        </div>
+        <div class="module-card" data-module="M3">
+          <div class="module-emoji">🌿</div>
+          <div class="module-num">第三關</div>
+          <div class="module-name">本草安全</div>
+          <div class="module-desc">藥性與毒性</div>
+        </div>
+        <div class="module-card" data-module="M4">
+          <div class="module-emoji">📍</div>
+          <div class="module-num">第四關</div>
+          <div class="module-name">經絡俞穴</div>
+          <div class="module-desc">特定穴法</div>
+        </div>
+        <div class="module-card" data-module="M5">
+          <div class="module-emoji">📜</div>
+          <div class="module-num">第五關</div>
+          <div class="module-name">經典原文</div>
+          <div class="module-desc">傷寒金匱溫病</div>
+        </div>
+        <div class="module-card" data-module="M6">
+          <div class="module-emoji">🩺</div>
+          <div class="module-num">第六關</div>
+          <div class="module-name">疑難臨證</div>
+          <div class="module-desc">中西會通</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 修行中 -->
+    <section id="page-quiz" class="page">
+      <div class="quiz-top">
+        <button class="btn-back" data-back="modules">←</button>
+        <div class="quiz-progress-info">心法 <span id="q-current">1</span> / <span id="q-total">20</span></div>
+        <div class="quiz-score">道行 <span id="live-score">0</span></div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="quiz-body">
+        <div class="diff-tag" id="diff-tag">基礎</div>
+        <h2 class="question" id="question-text">題目載入中...</h2>
+        <div class="options" id="options"></div>
+      </div>
+      <div class="feedback-panel hidden" id="feedback-panel">
+        <div class="feedback-title" id="feedback-title"></div>
+        <div class="feedback-explain" id="feedback-explain"></div>
+        <button class="btn-main" id="btn-next">印證下一心法 →</button>
+      </div>
+    </section>
+
+    <!-- 功果 -->
+    <section id="page-result" class="page">
+      <div class="result-content">
+        <div class="result-emoji">🎌</div>
+        <div class="result-label">本次修行功果</div>
+        <div class="result-score" id="result-score">0</div>
+        <div class="result-detail">
+          <div class="detail-item"><span>領悟</span><strong id="result-correct">0</strong></div>
+          <div class="detail-item"><span>心法</span><strong id="result-total">0</strong></div>
+          <div class="detail-item"><span>契合度</span><strong id="result-accuracy">0%</strong></div>
+        </div>
+        <button class="btn-main" id="btn-home">回歸山林</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const allQuestions = [
+      {"id":"M1-001","module":"M1","difficulty":"基礎","question":"患者惡寒發熱、頭痛項強、無汗而喘、脈浮緊。最符合下列何證？","options":["A. 太陽中風證","B. 太陽傷寒證","C. 陽明經證","D. 少陽病"],"answer":"B","explanation":"無汗、脈浮緊為太陽傷寒（麻黃湯證）。"},
+      {"id":"M1-002","module":"M1","difficulty":"基礎","question":"往來寒熱、胸脅苦滿、默默不欲飲食、心煩喜嘔、口苦咽乾目眩，屬哪一經病？","options":["A. 太陽病","B. 陽明病","C. 少陽病","D. 太陰病"],"answer":"C","explanation":"此為少陽病提綱證。"},
+      {"id":"M1-003","module":"M1","difficulty":"中等","question":"患者腹滿而吐、食不下、自利益甚、時腹自痛，最可能的六經定位是？","options":["A. 陽明腑實證","B. 太陰病","C. 少陰病","D. 厥陰病"],"answer":"B","explanation":"此為太陰病提綱，脾陽虛寒。"},
+      {"id":"M1-005","module":"M1","difficulty":"困難","question":"患者消渴、氣上撞心、心中疼熱、飢而不欲食、食則吐蛔，四肢厥冷。六經病機最可能是？","options":["A. 太陰虛寒","B. 少陰寒化","C. 厥陰病寒熱錯雜","D. 陽明熱盛"],"answer":"C","explanation":"典型厥陰病寒熱錯雜表現。"},
+      {"id":"M2-001","module":"M2","difficulty":"基礎","question":"桂枝湯與麻黃湯的主要鑑別點在於？","options":["A. 有汗與無汗","B. 脈浮緩與脈浮緊","C. 以上皆是","D. 惡風與惡寒"],"answer":"C","explanation":"桂枝湯證有汗脈浮緩；麻黃湯證無汗脈浮緊。"},
+      {"id":"M2-010","module":"M2","difficulty":"基礎","question":"陽明腑實證，痞滿燥實皆具，潮熱譫語、手足濈然汗出，首選？","options":["A. 小承氣湯","B. 調胃承氣湯","C. 大承氣湯","D. 桃核承氣湯"],"answer":"C","explanation":"痞滿燥實全具，用大承氣湯。"},
+      {"id":"M2-019","module":"M2","difficulty":"困難","question":"小柴胡湯與大柴胡湯的關鍵鑑別點是？","options":["A. 小柴胡湯治少陽病；大柴胡湯治少陽兼陽明腑實","B. 兩者僅柴胡劑量不同","C. 大柴胡湯不用大黃","D. 小柴胡湯可攻下"],"answer":"A","explanation":"大柴胡湯兼治陽明裡實。"},
+      {"id":"M3-002","module":"M3","difficulty":"基礎","question":"具有「酸甘化陰」配伍特點的代表藥物組合是？","options":["A. 麻黃 + 桂枝","B. 白芍 + 甘草","C. 黃連 + 乾薑","D. 半夏 + 生薑"],"answer":"B","explanation":"白芍酸寒、甘草甘平，酸甘化陰。"},
+      {"id":"M3-003","module":"M3","difficulty":"中等","question":"關於附子的安全使用，下列何者正確？","options":["A. 可與半夏同用","B. 必須先煎久煎以減毒","C. 孕婦可常規使用","D. 中毒時只需飲綠豆湯即可"],"answer":"B","explanation":"附子有毒，必須先煎30–60分鐘以上。"},
+      {"id":"M3-011","module":"M3","difficulty":"中等","question":"妊娠期間，下列哪類藥物應特別慎用或禁用？","options":["A. 活血化瘀藥","B. 峻下逐水藥","C. 有毒及辛熱走竄藥","D. 以上皆是"],"answer":"D","explanation":"妊娠禁忌主要包括活血、峻下、有毒、辛熱走竄之品。"},
+      {"id":"M4-001","module":"M4","difficulty":"基礎","question":"足三里屬於下列哪些特定穴？","options":["A. 原穴","B. 合穴、胃之下合穴","C. 絡穴","D. 郄穴"],"answer":"B","explanation":"足三里為足陽明胃經合穴，亦為胃之下合穴。"},
+      {"id":"M4-005","module":"M4","difficulty":"困難","question":"八會穴中「筋會」是？","options":["A. 陽陵泉","B. 懸鐘（絕骨）","C. 太淵","D. 膈俞"],"answer":"A","explanation":"筋會陽陵泉。"},
+      {"id":"M4-002","module":"M4","difficulty":"基礎","question":"八脈交會穴中，內關配公孫，主治？","options":["A. 心、胸、胃疾患","B. 肺系、咽喉病","C. 目內眥、項、耳、肩部病","D. 目外眥、頰、頸、肩部病"],"answer":"A","explanation":"內關通陰維、公孫通衝脈，合治心胸胃。"},
+      {"id":"M5-001","module":"M5","difficulty":"基礎","question":"《傷寒論》「太陽病，發熱汗出，惡風，脈緩者」，名為何證？","options":["A. 中風","B. 傷寒","C. 溫病","D. 風溫"],"answer":"A","explanation":"第2條：名為中風。"},
+      {"id":"M5-002","module":"M5","difficulty":"中等","question":"《金匱要略》「見肝之病，知肝傳脾，當先實脾」體現的治療原則是？","options":["A. 治已病","B. 治未病、既病防變","C. 扶正祛邪","D. 攻補兼施"],"answer":"B","explanation":"此為治未病思想。"},
+      {"id":"M5-004","module":"M5","difficulty":"困難","question":"《傷寒論》「少陰之為病，脈微細，但欲寐也」強調的核心病機是？","options":["A. 單純陽氣虛衰","B. 單純陰血不足","C. 心腎陽虛、神氣失養","D. 單純寒邪盛"],"answer":"C","explanation":"脈微細、但欲寐為心腎陽虛、神氣衰。"},
+      {"id":"M6-002","module":"M6","difficulty":"基礎","question":"「腫瘤患者絕對不能用補藥，否則會促進腫瘤生長」的說法是否正確？","options":["A. 正確","B. 錯誤","C. 僅對實證腫瘤正確","D. 僅對晚期患者正確"],"answer":"B","explanation":"應辨證使用扶正藥，合理扶正可提高生活質量。"},
+      {"id":"M6-003","module":"M6","difficulty":"中等","question":"社區獲得性肺炎患者，抗生素使用3天後熱退不全、咳嗽黃痰仍多。中醫較適合的介入方式是？","options":["A. 立即停用所有西藥","B. 清熱解毒、宣肺化痰，與抗生素協同","C. 大劑溫陽以防寒涼傷陽","D. 只用中成藥"],"answer":"B","explanation":"中西協同可縮短病程。"}
+    ];
+
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    function playTone(freq, duration, type = "sine") {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+    function playCorrect() {
+      initAudio();
+      playTone(523.25, 0.12);
+      setTimeout(() => playTone(659.25, 0.15), 100);
+    }
+    function playWrong() {
+      initAudio();
+      playTone(220, 0.25, "triangle");
+    }
+
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+    let correctCount = 0;
+
+    const pages = {
+      home: document.getElementById("page-home"),
+      modules: document.getElementById("page-modules"),
+      quiz: document.getElementById("page-quiz"),
+      result: document.getElementById("page-result")
+    };
+
+    function showPage(name) {
+      Object.values(pages).forEach(p => p.classList.remove("active"));
+      pages[name].classList.add("active");
+    }
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function startQuiz(module) {
+      currentQuestions = module === "all"
+        ? shuffle(allQuestions)
+        : shuffle(allQuestions.filter(q => q.module === module));
+
+      if (currentQuestions.length === 0) {
+        alert("此關卡目前沒有心法");
+        return;
+      }
+
+      currentIndex = 0;
+      score = 0;
+      correctCount = 0;
+      showPage("quiz");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = currentQuestions[currentIndex];
+      document.getElementById("q-current").textContent = currentIndex + 1;
+      document.getElementById("q-total").textContent = currentQuestions.length;
+      document.getElementById("live-score").textContent = score;
+      document.getElementById("progress-fill").style.width = `${(currentIndex / currentQuestions.length) * 100}%`;
+      document.getElementById("diff-tag").textContent = q.difficulty || "基礎";
+      document.getElementById("diff-tag").className = "diff-tag " + (q.difficulty || "基礎");
+      document.getElementById("question-text").textContent = q.question;
+
+      const optionsEl = document.getElementById("options");
+      optionsEl.innerHTML = "";
+      q.options.forEach(opt => {
+        const div = document.createElement("div");
+        div.className = "option";
+        div.textContent = opt;
+        div.addEventListener("click", () => handleAnswer(div, q));
+        optionsEl.appendChild(div);
+      });
+      document.getElementById("feedback-panel").classList.add("hidden");
+    }
+
+    function handleAnswer(selected, q) {
+      const options = document.querySelectorAll(".option");
+      options.forEach(o => o.classList.add("disabled"));
+
+      const correctOpt = q.options.find(o => o.startsWith(q.answer + ".") || o.startsWith(q.answer + " "));
+      const isCorrect = selected.textContent === correctOpt;
+
+      if (isCorrect) {
+        selected.classList.add("correct");
+        document.getElementById("feedback-title").textContent = "✅ 心法契合";
+        document.getElementById("feedback-title").className = "feedback-title ok";
+        correctCount++;
+        const point = q.difficulty === "困難" ? 3 : q.difficulty === "中等" ? 2 : 1;
+        score += point;
+        playCorrect();
+      } else {
+        selected.classList.add("wrong");
+        document.getElementById("feedback-title").textContent = "❌ 此處尚需精進";
+        document.getElementById("feedback-title").className = "feedback-title ng";
+        options.forEach(o => {
+          if (o.textContent === correctOpt) o.classList.add("correct");
+        });
+        playWrong();
+      }
+
+      document.getElementById("feedback-explain").textContent = q.explanation || "暫無解析";
+      document.getElementById("live-score").textContent = score;
+      document.getElementById("feedback-panel").classList.remove("hidden");
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < currentQuestions.length) {
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("result-score").textContent = score;
+      document.getElementById("result-correct").textContent = correctCount;
+      document.getElementById("result-total").textContent = currentQuestions.length;
+      document.getElementById("result-accuracy").textContent = Math.round((correctCount / currentQuestions.length) * 100) + "%";
+      showPage("result");
+    }
+
+    document.getElementById("btn-start").addEventListener("click", () => {
+      initAudio();
+      showPage("modules");
+    });
+    document.querySelectorAll(".module-card").forEach(card => {
+      card.addEventListener("click", () => startQuiz(card.dataset.module));
+    });
+    document.getElementById("btn-next").addEventListener("click", nextQuestion);
+    document.getElementById("btn-home").addEventListener("click", () => showPage("home"));
+    document.querySelectorAll(".btn-back").forEach(btn => {
+      btn.addEventListener("click", () => showPage(btn.dataset.back));
+    });
+  </script>
+</body>
+</html>
