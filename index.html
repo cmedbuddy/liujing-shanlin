@@ -646,10 +646,47 @@ const allQuestions = [
       playTone(220, 0.25, "triangle");
     }
 
+    // ==================== 進度儲存 ====================
+    const STORAGE_KEY = "liujing_progress";
+
+    function loadProgress() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function saveProgress(progress) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }
+
+    function getMasteredIds(module) {
+      const progress = loadProgress();
+      return progress[module] || [];
+    }
+
+    function markAsMastered(module, questionId) {
+      const progress = loadProgress();
+      if (!progress[module]) progress[module] = [];
+      if (!progress[module].includes(questionId)) {
+        progress[module].push(questionId);
+        saveProgress(progress);
+      }
+    }
+
+    function isModuleCompleted(module) {
+      const mastered = getMasteredIds(module);
+      const totalInModule = allQuestions.filter(q => q.module === module).length;
+      return mastered.length >= totalInModule && totalInModule > 0;
+    }
+
+    // ==================== 遊戲狀態 ====================
     let currentQuestions = [];
     let currentIndex = 0;
     let score = 0;
     let correctCount = 0;
+    let currentModule = "";
 
     const pages = {
       home: document.getElementById("page-home"),
@@ -672,16 +709,36 @@ const allQuestions = [
       return a;
     }
 
+    // ==================== 開始關卡 ====================
     function startQuiz(module) {
-      currentQuestions = module === "all"
-        ? shuffle(allQuestions)
-        : shuffle(allQuestions.filter(q => q.module === module));
+      currentModule = module;
 
-      if (currentQuestions.length === 0) {
-        alert("此關卡目前沒有心法");
+      // 檢查是否已全部完成
+      if (module !== "all" && isModuleCompleted(module)) {
+        alert("此關卡已全部完成！");
         return;
       }
 
+      let pool = [];
+      if (module === "all") {
+        // 全部題目：只出還沒掌握的
+        const allMastered = [];
+        ["M1","M2","M3","M4","M5","M6"].forEach(m => {
+          allMastered.push(...getMasteredIds(m));
+        });
+        pool = allQuestions.filter(q => !allMastered.includes(q.id));
+      } else {
+        // 單一關卡：只出還沒掌握的
+        const mastered = getMasteredIds(module);
+        pool = allQuestions.filter(q => q.module === module && !mastered.includes(q.id));
+      }
+
+      if (pool.length === 0) {
+        alert("此關卡已全部完成！");
+        return;
+      }
+
+      currentQuestions = shuffle(pool);
       currentIndex = 0;
       score = 0;
       correctCount = 0;
@@ -725,6 +782,10 @@ const allQuestions = [
         correctCount++;
         const point = q.difficulty === "困難" ? 3 : q.difficulty === "中等" ? 2 : 1;
         score += point;
+
+        // 答對 → 標記為已掌握，之後不再出現
+        markAsMastered(q.module, q.id);
+
         playCorrect();
       } else {
         selected.classList.add("wrong");
@@ -733,6 +794,7 @@ const allQuestions = [
         options.forEach(o => {
           if (o.textContent === correctOpt) o.classList.add("correct");
         });
+        // 答錯不標記，之後還會再出現
         playWrong();
       }
 
@@ -754,22 +816,71 @@ const allQuestions = [
       document.getElementById("result-score").textContent = score;
       document.getElementById("result-correct").textContent = correctCount;
       document.getElementById("result-total").textContent = currentQuestions.length;
-      document.getElementById("result-accuracy").textContent = Math.round((correctCount / currentQuestions.length) * 100) + "%";
+
+      const accuracy = currentQuestions.length > 0
+        ? Math.round((correctCount / currentQuestions.length) * 100) + "%"
+        : "0%";
+      document.getElementById("result-accuracy").textContent = accuracy;
+
+      // 檢查是否整個關卡已完成
+      if (currentModule !== "all" && isModuleCompleted(currentModule)) {
+        document.getElementById("result-label").textContent = "關卡已完成";
+        document.querySelector(".result-emoji").textContent = "🏆";
+      } else {
+        document.getElementById("result-label").textContent = "本次修行功果";
+        document.querySelector(".result-emoji").textContent = "🎌";
+      }
+
       showPage("result");
     }
 
+    // ==================== 事件綁定 ====================
     document.getElementById("btn-start").addEventListener("click", () => {
       initAudio();
       showPage("modules");
     });
+
     document.querySelectorAll(".module-card").forEach(card => {
-      card.addEventListener("click", () => startQuiz(card.dataset.module));
+      card.addEventListener("click", () => {
+        const module = card.dataset.module;
+        startQuiz(module);
+      });
     });
+
     document.getElementById("btn-next").addEventListener("click", nextQuestion);
     document.getElementById("btn-home").addEventListener("click", () => showPage("home"));
+
     document.querySelectorAll(".btn-back").forEach(btn => {
       btn.addEventListener("click", () => showPage(btn.dataset.back));
     });
+
+    // 音效函式（保持原本的）
+    let audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    function playTone(freq, duration, type = "sine") {
+      if (!audioCtx) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+    function playCorrect() {
+      initAudio();
+      playTone(523.25, 0.12);
+      setTimeout(() => playTone(659.25, 0.15), 100);
+    }
+    function playWrong() {
+      initAudio();
+      playTone(220, 0.25, "triangle");
+    }
   </script>
 </body>
 </html>
