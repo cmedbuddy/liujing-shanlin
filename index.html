@@ -20,9 +20,7 @@
       --radius-sm: 16px;
       --shadow: 0 4px 24px rgba(44, 44, 44, 0.07);
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: "Hiragino Sans", "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
       background: var(--bg);
@@ -30,22 +28,9 @@
       min-height: 100vh;
       line-height: 1.6;
     }
-
-    #app {
-      max-width: 480px;
-      margin: 0 auto;
-      min-height: 100vh;
-      position: relative;
-    }
-
-    .page {
-      display: none;
-      min-height: 100vh;
-      padding: 24px 20px 40px;
-      animation: fadeIn 0.35s ease;
-    }
+    #app { max-width: 480px; margin: 0 auto; min-height: 100vh; position: relative; }
+    .page { display: none; min-height: 100vh; padding: 24px 20px 40px; animation: fadeIn 0.35s ease; }
     .page.active { display: block; }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -53,269 +38,119 @@
 
     /* 首頁 */
     #page-home {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 60px 24px;
+      display: none; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 60px 24px;
     }
     #page-home.active { display: flex; }
-
-    .logo {
-      font-size: 2.3rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      margin-bottom: 16px;
-    }
-    .desc {
-      font-size: 0.95rem;
-      color: var(--ink-light);
-      margin-bottom: 48px;
-      line-height: 1.7;
-    }
-    .home-footer {
-      position: absolute;
-      bottom: 32px;
-      font-size: 0.75rem;
-      color: #b0a99f;
-    }
+    .logo { font-size: 2.3rem; font-weight: 600; letter-spacing: 0.12em; margin-bottom: 16px; }
+    .desc { font-size: 0.95rem; color: var(--ink-light); margin-bottom: 40px; line-height: 1.7; }
+    .home-footer { position: absolute; bottom: 32px; font-size: 0.75rem; color: #b0a99f; }
 
     .btn-main {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 15px 48px;
-      border-radius: 50px;
-      font-size: 1rem;
-      letter-spacing: 0.1em;
-      cursor: pointer;
-      transition: all 0.25s;
-      box-shadow: 0 4px 14px rgba(91, 124, 90, 0.25);
+      background: var(--accent); color: white; border: none; padding: 15px 48px;
+      border-radius: 50px; font-size: 1rem; letter-spacing: 0.1em; cursor: pointer;
+      transition: all 0.25s; box-shadow: 0 4px 14px rgba(91, 124, 90, 0.25);
     }
-    .btn-main:hover {
-      background: #4a6b49;
-      transform: translateY(-2px);
+    .btn-main:hover { background: #4a6b49; transform: translateY(-2px); }
+    .btn-reset {
+      margin-top: 20px; background: transparent; border: 1.5px solid var(--line);
+      color: var(--ink-light); padding: 10px 28px; border-radius: 50px;
+      font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
     }
-
-    .btn-back {
-      background: none;
-      border: none;
-      font-size: 1.4rem;
-      color: var(--ink-light);
-      cursor: pointer;
-      padding: 4px 8px;
-    }
+    .btn-reset:hover { border-color: var(--wrong); color: var(--wrong); }
+    .btn-back { background: none; border: none; font-size: 1.4rem; color: var(--ink-light); cursor: pointer; padding: 4px 8px; }
 
     /* 選擇關卡 */
-    .page-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-    .page-header h2 {
-      font-size: 1.2rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-    }
-
-    .module-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
+    .page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+    .page-header h2 { font-size: 1.2rem; font-weight: 500; letter-spacing: 0.08em; }
+    .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .module-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 22px 16px;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      transition: all 0.25s;
-      border: 1.5px solid transparent;
-      text-align: center;
+      background: var(--card); border-radius: var(--radius); padding: 22px 16px;
+      box-shadow: var(--shadow); cursor: pointer; transition: all 0.25s;
+      border: 1.5px solid transparent; text-align: center; position: relative;
     }
     .module-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
+      border-color: var(--accent); transform: translateY(-4px);
       box-shadow: 0 10px 28px rgba(91, 124, 90, 0.13);
     }
-
-    /* 臨床總覽佔滿整行 */
-    .module-card.wide {
-      grid-column: 1 / -1;
-      padding: 26px 20px;
+    .module-card.wide { grid-column: 1 / -1; padding: 26px 20px; }
+    .module-card.wide .module-emoji { font-size: 2.2rem; }
+    .module-card.wide .module-name { font-size: 1.25rem; }
+    .module-card.completed { opacity: 0.7; }
+    .module-card.completed::after {
+      content: "已完成"; position: absolute; top: 10px; right: 12px;
+      font-size: 0.7rem; background: var(--accent); color: white;
+      padding: 2px 8px; border-radius: 20px;
     }
-    .module-card.wide .module-emoji {
-      font-size: 2.2rem;
-    }
-    .module-card.wide .module-name {
-      font-size: 1.25rem;
-    }
-
     .module-emoji { font-size: 1.8rem; margin-bottom: 8px; }
     .module-num { font-size: 0.72rem; color: var(--warm); letter-spacing: 0.1em; margin-bottom: 4px; }
     .module-name { font-size: 1.05rem; font-weight: 500; margin-bottom: 4px; }
     .module-desc { font-size: 0.8rem; color: var(--ink-light); }
 
     /* 答題頁 */
-    .quiz-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
+    .quiz-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
     .quiz-progress-info { font-size: 0.9rem; color: var(--ink-light); }
     .quiz-score { font-size: 0.95rem; font-weight: 500; color: var(--accent); }
-
-    .progress-track {
-      height: 6px;
-      background: var(--line);
-      border-radius: 10px;
-      margin-bottom: 28px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--accent);
-      width: 0%;
-      border-radius: 10px;
-      transition: width 0.4s ease;
-    }
-
-    .quiz-body {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 28px 22px;
-      box-shadow: var(--shadow);
-      margin-bottom: 20px;
-    }
-
+    .progress-track { height: 6px; background: var(--line); border-radius: 10px; margin-bottom: 28px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); width: 0%; border-radius: 10px; transition: width 0.4s ease; }
+    .quiz-body { background: var(--card); border-radius: var(--radius); padding: 28px 22px; box-shadow: var(--shadow); margin-bottom: 20px; }
     .diff-tag {
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 4px 12px;
-      border-radius: 20px;
-      background: var(--accent-soft);
-      color: var(--accent);
-      margin-bottom: 16px;
+      display: inline-block; font-size: 0.75rem; padding: 4px 12px; border-radius: 20px;
+      background: var(--accent-soft); color: var(--accent); margin-bottom: 16px;
     }
     .diff-tag.中等 { background: #f5efe6; color: #a67c52; }
     .diff-tag.困難 { background: #f8e9e6; color: var(--wrong); }
-
-    .question {
-      font-size: 1.1rem;
-      font-weight: 500;
-      line-height: 1.55;
-      margin-bottom: 24px;
-    }
-
+    .question { font-size: 1.1rem; font-weight: 500; line-height: 1.55; margin-bottom: 24px; }
     .options { display: flex; flex-direction: column; gap: 12px; }
-
     .option {
-      background: #fafaf7;
-      border: 1.5px solid var(--line);
-      border-radius: var(--radius-sm);
-      padding: 15px 18px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
+      background: #fafaf7; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+      padding: 15px 18px; font-size: 0.95rem; cursor: pointer; transition: all 0.2s; text-align: left;
     }
-    .option:hover:not(.disabled) {
-      border-color: var(--accent);
-      background: var(--accent-soft);
-    }
-    .option.correct {
-      border-color: var(--correct);
-      background: #eaf3ec;
-      color: var(--correct);
-    }
-    .option.wrong {
-      border-color: var(--wrong);
-      background: #fdf0eb;
-      color: var(--wrong);
-    }
+    .option:hover:not(.disabled) { border-color: var(--accent); background: var(--accent-soft); }
+    .option.correct { border-color: var(--correct); background: #eaf3ec; color: var(--correct); }
+    .option.wrong { border-color: var(--wrong); background: #fdf0eb; color: var(--wrong); }
     .option.disabled { pointer-events: none; }
-
     .feedback-panel {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      animation: fadeIn 0.3s ease;
+      background: var(--card); border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow); animation: fadeIn 0.3s ease;
     }
     .feedback-panel.hidden { display: none; }
-
-    .feedback-title {
-      font-size: 1.15rem;
-      font-weight: 500;
-      margin-bottom: 14px;
-    }
+    .feedback-title { font-size: 1.15rem; font-weight: 500; margin-bottom: 14px; }
     .feedback-title.ok { color: var(--correct); }
     .feedback-title.ng { color: var(--wrong); }
-
     .feedback-explain {
-      background: #f7f4ef;
-      padding: 14px 16px;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      color: var(--ink-light);
-      margin-bottom: 20px;
-      line-height: 1.55;
+      background: #f7f4ef; padding: 14px 16px; border-radius: var(--radius-sm);
+      font-size: 0.9rem; color: var(--ink-light); margin-bottom: 20px; line-height: 1.55;
     }
 
-    /* 結算 */
-    #page-result {
-      display: none;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+    /* 結算 / 畢業 */
+    #page-result, #page-graduate {
+      display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
     }
-    #page-result.active { display: flex; }
-
+    #page-result.active, #page-graduate.active { display: flex; }
     .result-emoji { font-size: 3rem; margin-bottom: 12px; }
-    .result-label {
-      font-size: 0.9rem;
-      color: var(--ink-light);
-      letter-spacing: 0.15em;
-      margin-bottom: 12px;
-    }
-    .result-score {
-      font-size: 3.4rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 32px;
-    }
+    .result-label { font-size: 0.9rem; color: var(--ink-light); letter-spacing: 0.15em; margin-bottom: 12px; }
+    .result-score { font-size: 3.4rem; font-weight: 600; color: var(--accent); margin-bottom: 32px; }
     .result-detail {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 36px;
-      display: flex;
-      justify-content: space-around;
+      background: var(--card); border-radius: var(--radius); padding: 24px;
+      box-shadow: var(--shadow); margin-bottom: 36px; display: flex; justify-content: space-around; width: 100%;
     }
-    .detail-item {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
+    .detail-item { display: flex; flex-direction: column; gap: 4px; }
     .detail-item span { font-size: 0.8rem; color: var(--ink-light); }
     .detail-item strong { font-size: 1.3rem; font-weight: 500; }
+    .graduate-title { font-size: 2rem; font-weight: 600; color: var(--accent); margin: 16px 0; letter-spacing: 0.1em; }
+    .graduate-desc { color: var(--ink-light); margin-bottom: 40px; line-height: 1.7; }
   </style>
 </head>
 <body>
   <div id="app">
-
     <!-- 首頁 -->
     <section id="page-home" class="page active">
       <div class="home-content">
         <div class="logo">🌿六經山林🌿</div>
         <p class="desc">入此林者，以經典為舟<br>以臨床為岸，溫故而知新</p>
         <button class="btn-main" id="btn-start">踏入山林</button>
+        <button class="btn-reset" id="btn-reset">重置進度</button>
       </div>
       <div class="home-footer">杏林一脈 · 六經為綱</div>
     </section>
@@ -326,15 +161,13 @@
         <button class="btn-back" data-back="home">←</button>
         <h2>選擇修行關卡</h2>
       </div>
-      <div class="module-grid">
-        <!-- 臨床總覽：佔滿整行 -->
+      <div class="module-grid" id="module-grid">
         <div class="module-card wide" data-module="all">
           <div class="module-emoji">📚</div>
           <div class="module-num">總錄</div>
           <div class="module-name">臨床總覽</div>
           <div class="module-desc">融會貫通 · 綜合印證</div>
         </div>
-
         <div class="module-card" data-module="M1">
           <div class="module-emoji">☯️</div>
           <div class="module-num">第一關</div>
@@ -374,7 +207,7 @@
       </div>
     </section>
 
-    <!-- 修行中 -->
+    <!-- 答題 -->
     <section id="page-quiz" class="page">
       <div class="quiz-top">
         <button class="btn-back" data-back="modules">←</button>
@@ -394,11 +227,11 @@
       </div>
     </section>
 
-    <!-- 功果 -->
+    <!-- 結算 -->
     <section id="page-result" class="page">
       <div class="result-content">
-        <div class="result-emoji">🎌</div>
-        <div class="result-label">本次修行功果</div>
+        <div class="result-emoji" id="result-emoji">🎌</div>
+        <div class="result-label" id="result-label">本次修行功果</div>
         <div class="result-score" id="result-score">0</div>
         <div class="result-detail">
           <div class="detail-item"><span>領悟</span><strong id="result-correct">0</strong></div>
@@ -408,10 +241,21 @@
         <button class="btn-main" id="btn-home">回歸山林</button>
       </div>
     </section>
+
+    <!-- 畢業 -->
+    <section id="page-graduate" class="page">
+      <div class="result-content">
+        <div class="result-emoji">🎓</div>
+        <div class="graduate-title">畢 業</div>
+        <p class="graduate-desc">你已貫通六經山林所有心法<br>杏林之路，自此展開</p>
+        <button class="btn-main" id="btn-graduate-home">回歸山林</button>
+      </div>
+    </section>
   </div>
 
   <script>
-const allQuestions = [
+    // ==================== 題庫（可自行擴充至200題）====================
+   const allQuestions = [
   // M1 六經辨證 (50)
   {"id":"M1-001","module":"M1","difficulty":"基礎","question":"患者惡寒發熱、頭痛項強、無汗而喘、脈浮緊。最符合下列何證？","options":["A. 太陽中風證","B. 太陽傷寒證","C. 陽明經證","D. 少陽病"],"answer":"B","explanation":"無汗、脈浮緊為太陽傷寒（麻黃湯證）。"},
   {"id":"M1-002","module":"M1","difficulty":"基礎","question":"往來寒熱、胸脅苦滿、默默不欲飲食、心煩喜嘔、口苦咽乾目眩，屬哪一經病？","options":["A. 太陽病","B. 陽明病","C. 少陽病","D. 太陰病"],"answer":"C","explanation":"此為少陽病提綱證。"},
@@ -619,85 +463,61 @@ const allQuestions = [
   {"id":"M6-045","module":"M6","difficulty":"基礎","question":"「中醫只能治功能性疾病」的觀點是否正確？","options":["A. 正確","B. 錯誤","C. 僅對腫瘤正確","D. 僅對感染正確"],"answer":"B","explanation":"中醫在多種器質性疾病的輔助治療中有明確價值。"},
   {"id":"M6-046","module":"M6","difficulty":"中等","question":"腫瘤術後無復發，但疲乏、焦慮、失眠、納差，中醫主要價值是？","options":["A. 繼續大劑抗腫瘤","B. 改善生活質量與脾胃情志","C. 用劇毒中藥預防","D. 不予處理"],"answer":"B","explanation":"術後階段重在改善生活質量。"}
 ];
-    let audioCtx = null;
-    function initAudio() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    function playTone(freq, duration, type = "sine") {
-      if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-    function playCorrect() {
-      initAudio();
-      playTone(523.25, 0.12);
-      setTimeout(() => playTone(659.25, 0.15), 100);
-    }
-    function playWrong() {
-      initAudio();
-      playTone(220, 0.25, "triangle");
-    }
 
-    // ==================== 進度儲存 ====================
-    const STORAGE_KEY = "liujing_progress";
+    // ==================== 進度管理 ====================
+    const STORAGE_KEY = "liujing_progress_v2";
 
     function loadProgress() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-      } catch (e) {
-        return {};
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(e) { return {}; }
+    }
+    function saveProgress(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+    function getMastered(module) { return loadProgress()[module] || []; }
+    function markMastered(module, id) {
+      const p = loadProgress();
+      if (!p[module]) p[module] = [];
+      if (!p[module].includes(id)) { p[module].push(id); saveProgress(p); }
+    }
+    function isModuleDone(module) {
+      const total = allQuestions.filter(q => q.module === module).length;
+      return total > 0 && getMastered(module).length >= total;
+    }
+    function isAllDone() {
+      return ["M1","M2","M3","M4","M5","M6"].every(m => isModuleDone(m));
+    }
+    function resetProgress() {
+      if (confirm("確定要清除所有進度嗎？此操作無法復原。")) {
+        localStorage.removeItem(STORAGE_KEY);
+        updateModuleStatus();
+        alert("進度已重置");
       }
     }
 
-    function saveProgress(progress) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    // ==================== 更新關卡狀態顯示 ====================
+    function updateModuleStatus() {
+      document.querySelectorAll(".module-card").forEach(card => {
+        const m = card.dataset.module;
+        if (m !== "all" && isModuleDone(m)) {
+          card.classList.add("completed");
+        } else {
+          card.classList.remove("completed");
+        }
+      });
     }
 
-    function getMasteredIds(module) {
-      const progress = loadProgress();
-      return progress[module] || [];
-    }
-
-    function markAsMastered(module, questionId) {
-      const progress = loadProgress();
-      if (!progress[module]) progress[module] = [];
-      if (!progress[module].includes(questionId)) {
-        progress[module].push(questionId);
-        saveProgress(progress);
-      }
-    }
-
-    function isModuleCompleted(module) {
-      const mastered = getMasteredIds(module);
-      const totalInModule = allQuestions.filter(q => q.module === module).length;
-      return mastered.length >= totalInModule && totalInModule > 0;
-    }
-
-    // ==================== 遊戲狀態 ====================
-    let currentQuestions = [];
-    let currentIndex = 0;
-    let score = 0;
-    let correctCount = 0;
-    let currentModule = "";
+    // ==================== 遊戲邏輯 ====================
+    let currentQuestions = [], currentIndex = 0, score = 0, correctCount = 0, currentModule = "";
 
     const pages = {
       home: document.getElementById("page-home"),
       modules: document.getElementById("page-modules"),
       quiz: document.getElementById("page-quiz"),
-      result: document.getElementById("page-result")
+      result: document.getElementById("page-result"),
+      graduate: document.getElementById("page-graduate")
     };
-
     function showPage(name) {
       Object.values(pages).forEach(p => p.classList.remove("active"));
       pages[name].classList.add("active");
+      if (name === "modules") updateModuleStatus();
     }
 
     function shuffle(arr) {
@@ -709,39 +529,37 @@ const allQuestions = [
       return a;
     }
 
-    // ==================== 開始關卡 ====================
     function startQuiz(module) {
       currentModule = module;
 
-      // 檢查是否已全部完成
-      if (module !== "all" && isModuleCompleted(module)) {
-        alert("此關卡已全部完成！");
+      // 全部完成 → 畢業
+      if (isAllDone()) {
+        showPage("graduate");
         return;
       }
 
       let pool = [];
       if (module === "all") {
-        // 全部題目：只出還沒掌握的
-        const allMastered = [];
-        ["M1","M2","M3","M4","M5","M6"].forEach(m => {
-          allMastered.push(...getMasteredIds(m));
-        });
-        pool = allQuestions.filter(q => !allMastered.includes(q.id));
+        const mastered = [];
+        ["M1","M2","M3","M4","M5","M6"].forEach(m => mastered.push(...getMastered(m)));
+        pool = allQuestions.filter(q => !mastered.includes(q.id));
       } else {
-        // 單一關卡：只出還沒掌握的
-        const mastered = getMasteredIds(module);
+        if (isModuleDone(module)) {
+          alert("此關卡已全部完成！");
+          return;
+        }
+        const mastered = getMastered(module);
         pool = allQuestions.filter(q => q.module === module && !mastered.includes(q.id));
       }
 
       if (pool.length === 0) {
-        alert("此關卡已全部完成！");
+        if (isAllDone()) showPage("graduate");
+        else alert("此關卡已全部完成！");
         return;
       }
 
       currentQuestions = shuffle(pool);
-      currentIndex = 0;
-      score = 0;
-      correctCount = 0;
+      currentIndex = 0; score = 0; correctCount = 0;
       showPage("quiz");
       renderQuestion();
     }
@@ -751,27 +569,25 @@ const allQuestions = [
       document.getElementById("q-current").textContent = currentIndex + 1;
       document.getElementById("q-total").textContent = currentQuestions.length;
       document.getElementById("live-score").textContent = score;
-      document.getElementById("progress-fill").style.width = `${(currentIndex / currentQuestions.length) * 100}%`;
+      document.getElementById("progress-fill").style.width = (currentIndex / currentQuestions.length * 100) + "%";
       document.getElementById("diff-tag").textContent = q.difficulty || "基礎";
       document.getElementById("diff-tag").className = "diff-tag " + (q.difficulty || "基礎");
       document.getElementById("question-text").textContent = q.question;
 
-      const optionsEl = document.getElementById("options");
-      optionsEl.innerHTML = "";
+      const box = document.getElementById("options");
+      box.innerHTML = "";
       q.options.forEach(opt => {
         const div = document.createElement("div");
         div.className = "option";
         div.textContent = opt;
-        div.addEventListener("click", () => handleAnswer(div, q));
-        optionsEl.appendChild(div);
+        div.onclick = () => handleAnswer(div, q);
+        box.appendChild(div);
       });
       document.getElementById("feedback-panel").classList.add("hidden");
     }
 
     function handleAnswer(selected, q) {
-      const options = document.querySelectorAll(".option");
-      options.forEach(o => o.classList.add("disabled"));
-
+      document.querySelectorAll(".option").forEach(o => o.classList.add("disabled"));
       const correctOpt = q.options.find(o => o.startsWith(q.answer + ".") || o.startsWith(q.answer + " "));
       const isCorrect = selected.textContent === correctOpt;
 
@@ -780,107 +596,80 @@ const allQuestions = [
         document.getElementById("feedback-title").textContent = "✅ 心法契合";
         document.getElementById("feedback-title").className = "feedback-title ok";
         correctCount++;
-        const point = q.difficulty === "困難" ? 3 : q.difficulty === "中等" ? 2 : 1;
-        score += point;
-
-        // 答對 → 標記為已掌握，之後不再出現
-        markAsMastered(q.module, q.id);
-
+        score += q.difficulty === "困難" ? 3 : q.difficulty === "中等" ? 2 : 1;
+        markMastered(q.module, q.id);
         playCorrect();
       } else {
         selected.classList.add("wrong");
         document.getElementById("feedback-title").textContent = "❌ 此處尚需精進";
         document.getElementById("feedback-title").className = "feedback-title ng";
-        options.forEach(o => {
+        document.querySelectorAll(".option").forEach(o => {
           if (o.textContent === correctOpt) o.classList.add("correct");
         });
-        // 答錯不標記，之後還會再出現
         playWrong();
       }
-
-      document.getElementById("feedback-explain").textContent = q.explanation || "暫無解析";
+      document.getElementById("feedback-explain").textContent = q.explanation || "";
       document.getElementById("live-score").textContent = score;
       document.getElementById("feedback-panel").classList.remove("hidden");
     }
 
     function nextQuestion() {
       currentIndex++;
-      if (currentIndex < currentQuestions.length) {
-        renderQuestion();
-      } else {
-        showResult();
-      }
+      if (currentIndex < currentQuestions.length) renderQuestion();
+      else showResult();
     }
 
     function showResult() {
       document.getElementById("result-score").textContent = score;
       document.getElementById("result-correct").textContent = correctCount;
       document.getElementById("result-total").textContent = currentQuestions.length;
+      document.getElementById("result-accuracy").textContent =
+        currentQuestions.length ? Math.round(correctCount / currentQuestions.length * 100) + "%" : "0%";
 
-      const accuracy = currentQuestions.length > 0
-        ? Math.round((correctCount / currentQuestions.length) * 100) + "%"
-        : "0%";
-      document.getElementById("result-accuracy").textContent = accuracy;
-
-      // 檢查是否整個關卡已完成
-      if (currentModule !== "all" && isModuleCompleted(currentModule)) {
+      if (currentModule !== "all" && isModuleDone(currentModule)) {
         document.getElementById("result-label").textContent = "關卡已完成";
-        document.querySelector(".result-emoji").textContent = "🏆";
+        document.getElementById("result-emoji").textContent = "🏆";
       } else {
         document.getElementById("result-label").textContent = "本次修行功果";
-        document.querySelector(".result-emoji").textContent = "🎌";
+        document.getElementById("result-emoji").textContent = "🎌";
       }
 
+      // 全部完成 → 畢業
+      if (isAllDone()) {
+        setTimeout(() => showPage("graduate"), 800);
+        return;
+      }
       showPage("result");
     }
 
-    // ==================== 事件綁定 ====================
-    document.getElementById("btn-start").addEventListener("click", () => {
-      initAudio();
-      showPage("modules");
-    });
-
-    document.querySelectorAll(".module-card").forEach(card => {
-      card.addEventListener("click", () => {
-        const module = card.dataset.module;
-        startQuiz(module);
-      });
-    });
-
-    document.getElementById("btn-next").addEventListener("click", nextQuestion);
-    document.getElementById("btn-home").addEventListener("click", () => showPage("home"));
-
-    document.querySelectorAll(".btn-back").forEach(btn => {
-      btn.addEventListener("click", () => showPage(btn.dataset.back));
-    });
-
-    // 音效函式（保持原本的）
+    // ==================== 音效 ====================
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
-    function playTone(freq, duration, type = "sine") {
+    function playTone(freq, dur, type="sine") {
       if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.type = type; o.frequency.value = freq;
+      g.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.connect(g); g.connect(audioCtx.destination);
+      o.start(); o.stop(audioCtx.currentTime + dur);
     }
-    function playCorrect() {
-      initAudio();
-      playTone(523.25, 0.12);
-      setTimeout(() => playTone(659.25, 0.15), 100);
-    }
-    function playWrong() {
-      initAudio();
-      playTone(220, 0.25, "triangle");
-    }
+    function playCorrect() { initAudio(); playTone(523.25, 0.1); setTimeout(() => playTone(659.25, 0.12), 90); }
+    function playWrong() { initAudio(); playTone(220, 0.22, "triangle"); }
+
+    // ==================== 事件 ====================
+    document.getElementById("btn-start").onclick = () => { initAudio(); showPage("modules"); };
+    document.getElementById("btn-reset").onclick = resetProgress;
+    document.getElementById("btn-next").onclick = nextQuestion;
+    document.getElementById("btn-home").onclick = () => showPage("home");
+    document.getElementById("btn-graduate-home").onclick = () => showPage("home");
+    document.querySelectorAll(".btn-back").forEach(b => b.onclick = () => showPage(b.dataset.back));
+    document.querySelectorAll(".module-card").forEach(c => c.onclick = () => startQuiz(c.dataset.module));
+
+    // 初始化
+    updateModuleStatus();
   </script>
 </body>
 </html>
